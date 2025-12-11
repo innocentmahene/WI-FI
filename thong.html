@@ -1,0 +1,2203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentNet | Campus WiFi Service</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset & Variables */
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --secondary: #f59e0b;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: var(--primary);
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .logged-in {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-dropdown img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid var(--primary);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 10px 0;
+            min-width: 200px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: background 0.3s;
+        }
+
+        .dropdown-menu a:hover {
+            background: var(--light);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero-content h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .stat i {
+            font-size: 36px;
+            color: var(--secondary);
+        }
+
+        .stat h3 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .stat p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Layout */
+        .main-wrapper {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 25px;
+            margin: 30px auto;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--dark);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .student-badge {
+            background: linear-gradient(135deg, var(--secondary), #f97316);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .card-content h3 {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .card-content p {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .card-status {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .card-status.active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .card-status.inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Pricing Cards */
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pricing-card.popular {
+            border: 2px solid var(--primary);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .plan-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .plan-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+        }
+
+        .plan-price {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 20px 0;
+        }
+
+        .plan-price span {
+            font-size: 16px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plan-features li i {
+            color: var(--success);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .payment-method {
+            border: 2px solid var(--light);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover,
+        .payment-method.selected {
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .payment-method i {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .payment-method.mpesa i { color: #0c6138; }
+        .payment-method.airtel i { color: #e30613; }
+        .payment-method.cash i { color: #27ae60; }
+
+        /* Orders Table */
+        .orders-table {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .order-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 20px;
+            padding: 15px;
+            border-bottom: 1px solid var(--light);
+            align-items: center;
+        }
+
+        .order-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-status {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-active { background: #d1fae5; color: #065f46; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-completed { background: #dbeafe; color: #1e40af; }
+        .status-cancelled { background: #fee2e2; color: #991b1b; }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .close-modal:hover {
+            color: var(--dark);
+        }
+
+        /* Auth Modal */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--gray);
+        }
+
+        .auth-switch a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Success Modal */
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--success), #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 36px;
+            color: white;
+        }
+
+        .order-summary {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .payment-instructions {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h2 {
+                font-size: 32px;
+            }
+            
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeAuthModal()">×</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+            </div>
+            
+            <div id="loginForm" class="auth-form active">
+                <h3 style="text-align: center; margin-bottom: 25px;">Login to Your Account</h3>
+                <div class="form-group">
+                    <input type="email" id="loginEmail" class="form-input" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Password" required>
+                </div>
+                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Login</button>
+                <p class="auth-switch">Don't have an account? <a href="#" onclick="switchAuthTab('register')">Register</a></p>
+            </div>
+            
+            <div id="registerForm" class="auth-form">
+                <h3 style="text-align: center; margin-bottom: 25px;">Create Student Account</h3>
+                <div class="form-group">
+                    <input type="text" id="regName" class="form-input" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="regEmail" class="form-input" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="regPhone" class="form-input" placeholder="Phone Number" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="regRoom" class="form-input" placeholder="Room/Hostel Number" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="regPassword" class="form-input" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="regConfirmPassword" class="form-input" placeholder="Confirm Password" required>
+                </div>
+                <button class="btn btn-primary" onclick="register()" style="width: 100%;">Create Account</button>
+                <p class="auth-switch">Already have an account? <a href="#" onclick="switchAuthTab('login')">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closePaymentModal()">×</button>
+            <div class="modal-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 style="text-align: center; margin-bottom: 15px;">Order Confirmed!</h3>
+            <p style="text-align: center; color: var(--gray); margin-bottom: 25px;">Your WiFi order has been received successfully.</p>
+            
+            <div class="order-summary">
+                <div class="summary-item">
+                    <span>Order ID:</span>
+                    <strong id="orderId">#001</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Plan:</span>
+                    <strong id="summaryPlan">Day Pass</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Amount:</span>
+                    <strong id="summaryAmount">TZS 1,000</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Payment Method:</span>
+                    <strong id="summaryPayment">M-PESA</strong>
+                </div>
+            </div>
+            
+            <div class="payment-instructions" id="paymentInstructions">
+                <!-- Payment instructions will be inserted here -->
+            </div>
+            
+            <button class="btn btn-primary" onclick="closePaymentModal()" style="width: 100%;">Got it!</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-wifi"></i>
+                        <h1>Student<span>Net</span></h1>
+                    </div>
+                    
+                    <div class="user-info" id="userInfo">
+                        <div class="auth-buttons">
+                            <button class="btn btn-outline" onclick="showAuthModal()">Login</button>
+                            <button class="btn btn-primary" onclick="showAuthModal('register')">Sign Up</button>
+                        </div>
+                        <div class="logged-in" style="display: none;">
+                            <span id="userName">John Doe</span>
+                            <div class="user-dropdown">
+                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=667eea&color=fff" alt="User" id="userAvatar">
+                                <div class="dropdown-menu">
+                                    <a href="#" onclick="showSection('profile')"><i class="fas fa-user"></i> Profile</a>
+                                    <a href="#" onclick="showSection('orders')"><i class="fas fa-history"></i> My Orders</a>
+                                    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                                    <a href="#" onclick="showSection('admin')" id="adminLink" style="display: none;">
+                                        <i class="fas fa-cog"></i> Admin Panel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Campus WiFi by Students, for Students</h2>
+                    <p>Affordable internet access with simple pricing. Get connected in minutes with our student-run WiFi service.</p>
+                    <button class="btn btn-primary" onclick="showSection('order')">
+                        <i class="fas fa-wifi"></i> Get WiFi Now
+                    </button>
+                    
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <h3 id="heroUsers">250+</h3>
+                                <p>Students Connected</p>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-bolt"></i>
+                            <div>
+                                <h3>100 Mbps</h3>
+                                <p>Fast Speed</p>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h3>24/7</h3>
+                                <p>Support Available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="container main-wrapper">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-content">
+                    <nav class="sidebar-nav">
+                        <a href="#" class="nav-link active" onclick="showSection('dashboard')">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                        <a href="#" class="nav-link" onclick="showSection('order')">
+                            <i class="fas fa-wifi"></i> Order WiFi
+                        </a>
+                        <a href="#" class="nav-link" onclick="showSection('orders')">
+                            <i class="fas fa-history"></i> My Orders
+                        </a>
+                        <a href="#" class="nav-link" onclick="showSection('profile')">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                        <a href="#" class="nav-link" onclick="showSection('support')">
+                            <i class="fas fa-headset"></i> Support
+                        </a>
+                    </nav>
+                    
+                    <div class="student-badge">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Student-Run Business</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <!-- Dashboard Section -->
+                <section id="dashboardSection" class="content-section active">
+                    <div class="section-header">
+                        <h2>Welcome, <span id="dashboardName">Student</span></h2>
+                        <p>Your internet connection dashboard</p>
+                    </div>
+                    
+                    <div class="dashboard-cards">
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Connection Time</h3>
+                                <p id="connectionTime">0h 0m</p>
+                                <span class="card-status inactive" id="connectionStatus">Disconnected</span>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Data Used</h3>
+                                <p id="dataUsed">0 GB</p>
+                                <span class="card-status">This session</span>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Balance</h3>
+                                <p id="userBalance">TZS 0</p>
+                                <span class="card-status">Available credit</span>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Active Until</h3>
+                                <p id="activeUntil">--:--</p>
+                                <span class="card-status">Connection expires</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-actions" style="background: var(--card-bg); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 25px;">
+                        <h3 style="margin-bottom: 20px;">Quick Actions</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <button class="btn btn-primary" onclick="showSection('order')">
+                                <i class="fas fa-plus"></i> Buy More Time
+                            </button>
+                            <button class="btn btn-outline" onclick="showSection('orders')">
+                                <i class="fas fa-history"></i> View History
+                            </button>
+                            <button class="btn btn-outline" onclick="showSection('support')">
+                                <i class="fas fa-headset"></i> Get Help
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-orders" style="background: var(--card-bg); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow);">
+                        <h3 style="margin-bottom: 20px;">Recent Orders</h3>
+                        <div class="orders-table" id="recentOrders">
+                            <!-- Orders will be loaded here -->
+                            <div class="order-row">
+                                <div>No orders yet</div>
+                                <div>--</div>
+                                <div>--</div>
+                                <div class="order-status status-inactive">Inactive</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Order WiFi Section -->
+                <section id="orderSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Order WiFi</h2>
+                        <p>Choose your plan and get connected within minutes</p>
+                    </div>
+                    
+                    <div class="pricing-cards">
+                        <div class="pricing-card" data-plan="day">
+                            <div class="plan-header">
+                                <div class="plan-icon">
+                                    <i class="fas fa-sun"></i>
+                                </div>
+                                <h3>Day Pass</h3>
+                            </div>
+                            <div class="plan-price">TZS 1,000 <span>/ 12 hours</span></div>
+                            <div style="color: var(--gray); margin-bottom: 25px;">7:00 AM - 7:00 PM</div>
+                            <ul class="plan-features">
+                                <li><i class="fas fa-check"></i> 12 hours of fast WiFi</li>
+                                <li><i class="fas fa-check"></i> Up to 50 Mbps speed</li>
+                                <li><i class="fas fa-check"></i> Connect 3 devices</li>
+                                <li><i class="fas fa-check"></i> 5GB data limit</li>
+                                <li><i class="fas fa-check"></i> Student support included</li>
+                            </ul>
+                            <button class="btn btn-outline" onclick="selectPlan('day')" style="width: 100%;">Select Plan</button>
+                        </div>
+                        
+                        <div class="pricing-card popular" data-plan="night">
+                            <div class="popular-badge">Most Popular</div>
+                            <div class="plan-header">
+                                <div class="plan-icon">
+                                    <i class="fas fa-moon"></i>
+                                </div>
+                                <h3>Overnight</h3>
+                            </div>
+                            <div class="plan-price">TZS 6,000 <span>/ overnight</span></div>
+                            <div style="color: var(--gray); margin-bottom: 25px;">Router stays with you</div>
+                            <ul class="plan-features">
+                                <li><i class="fas fa-check"></i> Keep router overnight</li>
+                                <li><i class="fas fa-check"></i> Unlimited data all night</li>
+                                <li><i class="fas fa-check"></i> Connect unlimited devices</li>
+                                <li><i class="fas fa-check"></i> 7:00 PM - 7:00 AM</li>
+                                <li><i class="fas fa-check"></i> Perfect for late-night studies</li>
+                            </ul>
+                            <button class="btn btn-primary" onclick="selectPlan('night')" style="width: 100%;">Select Plan</button>
+                        </div>
+                        
+                        <div class="pricing-card" data-plan="24hr">
+                            <div class="plan-header">
+                                <div class="plan-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                                <h3>24-Hour</h3>
+                            </div>
+                            <div class="plan-price">TZS 10,000 <span>/ 24 hours</span></div>
+                            <div style="color: var(--gray); margin-bottom: 25px;">Full day access</div>
+                            <ul class="plan-features">
+                                <li><i class="fas fa-check"></i> 24 hours from activation</li>
+                                <li><i class="fas fa-check"></i> Up to 100 Mbps speed</li>
+                                <li><i class="fas fa-check"></i> Connect 5 devices</li>
+                                <li><i class="fas fa-check"></i> 15GB data limit</li>
+                                <li><i class="fas fa-check"></i> Priority support</li>
+                            </ul>
+                            <button class="btn btn-outline" onclick="selectPlan('24hr')" style="width: 100%;">Select Plan</button>
+                        </div>
+                    </div>
+                    
+                    <div id="orderFormContainer" style="background: var(--card-bg); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow);">
+                        <!-- Order form will be inserted here -->
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-shopping-cart" style="font-size: 48px; color: var(--gray); margin-bottom: 20px;"></i>
+                            <h3>Select a Plan to Continue</h3>
+                            <p style="color: var(--gray); margin-top: 10px;">Choose from the plans above to place your order</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- My Orders Section -->
+                <section id="ordersSection" class="content-section">
+                    <div class="section-header">
+                        <h2>My Orders</h2>
+                        <p>View your WiFi order history</p>
+                    </div>
+                    
+                    <div class="orders-table" id="ordersTable">
+                        <!-- Orders will be loaded here -->
+                        <div class="order-row">
+                            <div>No orders yet</div>
+                            <div>--</div>
+                            <div>--</div>
+                            <div class="order-status status-inactive">Inactive</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Profile Section -->
+                <section id="profileSection" class="content-section">
+                    <div class="section-header">
+                        <h2>My Profile</h2>
+                        <p>Manage your account information</p>
+                    </div>
+                    
+                    <div style="background: var(--card-bg); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow);">
+                        <div style="display: flex; align-items: center; gap: 25px; margin-bottom: 30px; flex-wrap: wrap;">
+                            <img src="https://ui-avatars.com/api/?name=John+Doe&background=667eea&color=fff" 
+                                 alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--primary);">
+                            <div>
+                                <h3 id="profileName">Guest User</h3>
+                                <p id="profileEmail" style="color: var(--gray); margin-bottom: 10px;">guest@student.com</p>
+                                <span style="background: var(--primary); color: white; padding: 6px 15px; border-radius: 20px; font-size: 14px;">Student</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" id="profileInputName" placeholder="Enter your name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-input" id="profileInputPhone" placeholder="07XX XXX XXX">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Room/Hostel Number</label>
+                            <input type="text" class="form-input" id="profileInputRoom" placeholder="Room 205, Hostel B">
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="saveProfile()" style="width: 100%;">
+                            <i class="fas fa-save"></i> Save Profile
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Support Section -->
+                <section id="supportSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Support Center</h2>
+                        <p>Get help with your WiFi connection</p>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 25px;">
+                        <div style="background: var(--card-bg); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; cursor: pointer;" onclick="openWhatsApp()">
+                            <i class="fab fa-whatsapp" style="font-size: 48px; color: #25D366; margin-bottom: 20px;"></i>
+                            <h3 style="margin-bottom: 10px;">WhatsApp Support</h3>
+                            <p style="color: var(--gray);">Chat with our student support team</p>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; cursor: pointer;" onclick="callSupport()">
+                            <i class="fas fa-phone" style="font-size: 48px; color: var(--primary); margin-bottom: 20px;"></i>
+                            <h3 style="margin-bottom: 10px;">Call Support</h3>
+                            <p style="color: var(--gray);">+255 712 345 678</p>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center;">
+                            <i class="fas fa-clock" style="font-size: 48px; color: var(--secondary); margin-bottom: 20px;"></i>
+                            <h3 style="margin-bottom: 10px;">Service Hours</h3>
+                            <p style="color: var(--gray);">Day: 7AM-7PM<br>Night: Must order by 6PM</p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: var(--card-bg); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow);">
+                        <h3 style="margin-bottom: 20px;">Frequently Asked Questions</h3>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="padding: 15px; border: 1px solid var(--light); border-radius: 8px;">
+                                <h4 style="margin-bottom: 5px;">How do I get the WiFi password?</h4>
+                                <p style="color: var(--gray); font-size: 14px;">After payment, you'll receive the WiFi password via SMS or WhatsApp. For overnight plans, we'll deliver the router to your room.</p>
+                            </div>
+                            <div style="padding: 15px; border: 1px solid var(--light); border-radius: 8px;">
+                                <h4 style="margin-bottom: 5px;">What payment methods do you accept?</h4>
+                                <p style="color: var(--gray); font-size: 14px;">We accept M-PESA, Airtel Money, and cash on delivery for your convenience.</p>
+                            </div>
+                            <div style="padding: 15px; border: 1px solid var(--light); border-radius: 8px;">
+                                <h4 style="margin-bottom: 5px;">How long does delivery take?</h4>
+                                <p style="color: var(--gray); font-size: 14px;">We deliver routers within 15-30 minutes after payment confirmation.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Admin Section -->
+                <section id="adminSection" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-cog"></i> Admin Dashboard</h2>
+                        <p>Manage student WiFi orders and users</p>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                        <div style="background: var(--card-bg); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center;">
+                            <i class="fas fa-users" style="font-size: 36px; color: var(--primary); margin-bottom: 15px;"></i>
+                            <div style="font-size: 32px; font-weight: 700; color: var(--dark); margin-bottom: 5px;" id="adminTotalUsers">0</div>
+                            <div style="font-size: 14px; color: var(--gray);">Total Users</div>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center;">
+                            <i class="fas fa-shopping-cart" style="font-size: 36px; color: var(--primary); margin-bottom: 15px;"></i>
+                            <div style="font-size: 32px; font-weight: 700; color: var(--dark); margin-bottom: 5px;" id="adminTotalOrders">0</div>
+                            <div style="font-size: 14px; color: var(--gray);">Total Orders</div>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center;">
+                            <i class="fas fa-money-bill-wave" style="font-size: 36px; color: var(--primary); margin-bottom: 15px;"></i>
+                            <div style="font-size: 32px; font-weight: 700; color: var(--dark); margin-bottom: 5px;" id="adminTotalRevenue">TZS 0</div>
+                            <div style="font-size: 14px; color: var(--gray);">Total Revenue</div>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center;">
+                            <i class="fas fa-wifi" style="font-size: 36px; color: var(--primary); margin-bottom: 15px;"></i>
+                            <div style="font-size: 32px; font-weight: 700; color: var(--dark); margin-bottom: 5px;" id="adminActiveNow">0</div>
+                            <div style="font-size: 14px; color: var(--gray);">Active Now</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
+                        <div style="background: var(--card-bg); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow);">
+                            <h3 style="margin-bottom: 20px;">Recent Orders</h3>
+                            <div id="adminOrdersList" style="display: flex; flex-direction: column; gap: 10px;">
+                                <!-- Admin orders will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow);">
+                            <h3 style="margin-bottom: 20px;">Quick Actions</h3>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <button class="btn btn-outline" onclick="addNewUser()">
+                                    <i class="fas fa-user-plus"></i> Add New User
+                                </button>
+                                <button class="btn btn-outline" onclick="exportData()">
+                                    <i class="fas fa-file-export"></i> Export Data
+                                </button>
+                                <button class="btn btn-outline" onclick="viewAllOrders()">
+                                    <i class="fas fa-list"></i> View All Orders
+                                </button>
+                                <button class="btn btn-outline" onclick="managePayments()">
+                                    <i class="fas fa-money-check"></i> Manage Payments
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer style="background: var(--dark); color: white; padding: 40px 0; margin-top: 50px;">
+            <div class="container">
+                <div style="text-align: center;">
+                    <h3 style="margin-bottom: 20px;">StudentNet WiFi Service</h3>
+                    <p style="color: #9ca3af; max-width: 800px; margin: 0 auto 25px;">
+                        A student-run WiFi service providing affordable internet access to fellow students. 
+                        We're here to keep you connected for your studies and entertainment.
+                    </p>
+                    <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;">
+                        <a href="#" onclick="showSection('support')" style="color: #9ca3af; text-decoration: none;">Support</a>
+                        <a href="#" onclick="showSection('order')" style="color: #9ca3af; text-decoration: none;">Pricing</a>
+                        <a href="#" onclick="openWhatsApp()" style="color: #9ca3af; text-decoration: none;">Contact</a>
+                        <a href="#" onclick="showTerms()" style="color: #9ca3af; text-decoration: none;">Terms</a>
+                    </div>
+                    <p style="color: #6b7280; font-size: 14px;">
+                        &copy; 2024 StudentNet. Made with <i class="fas fa-heart" style="color: #ef4444;"></i> by students, for students.
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Local Storage Database Simulation
+        class LocalStorageDB {
+            constructor() {
+                this.KEY = 'student_wifi_platform';
+                this.initDB();
+            }
+            
+            initDB() {
+                if (!localStorage.getItem(this.KEY)) {
+                    const defaultUsers = [
+                        {
+                            id: 1,
+                            name: "Admin User",
+                            email: "admin@studentnet.com",
+                            phone: "+255 712 345 678",
+                            room: "Admin Office",
+                            password: "admin123",
+                            isAdmin: true,
+                            balance: 100000,
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 2,
+                            name: "John Doe",
+                            email: "john@student.com",
+                            phone: "+255 712 345 679",
+                            room: "Room 205, Hostel B",
+                            password: "password123",
+                            isAdmin: false,
+                            balance: 5000,
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 3,
+                            name: "Jane Smith",
+                            email: "jane@student.com",
+                            phone: "+255 712 345 680",
+                            room: "Hostel B, Room 312",
+                            password: "password123",
+                            isAdmin: false,
+                            balance: 3000,
+                            createdAt: new Date().toISOString()
+                        }
+                    ];
+
+                    const defaultOrders = [
+                        {
+                            id: 1,
+                            userId: 2,
+                            plan: "night",
+                            planName: "Overnight Pass",
+                            amount: 6000,
+                            paymentMethod: "mpesa",
+                            status: "completed",
+                            wifiPassword: "WIFI1234",
+                            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                            expiresAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+                        },
+                        {
+                            id: 2,
+                            userId: 2,
+                            plan: "day",
+                            planName: "Day Pass",
+                            amount: 1000,
+                            paymentMethod: "cash",
+                            status: "active",
+                            wifiPassword: "WIFI5678",
+                            createdAt: new Date().toISOString(),
+                            expiresAt: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString()
+                        },
+                        {
+                            id: 3,
+                            userId: 3,
+                            plan: "24hr",
+                            planName: "24-Hour Pass",
+                            amount: 10000,
+                            paymentMethod: "airtel",
+                            status: "active",
+                            wifiPassword: "WIFI9101",
+                            createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+                            expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString()
+                        }
+                    ];
+
+                    const initialDB = {
+                        users: defaultUsers,
+                        orders: defaultOrders,
+                        stats: {
+                            totalUsers: defaultUsers.length,
+                            totalOrders: defaultOrders.length,
+                            totalRevenue: defaultOrders.reduce((sum, order) => sum + order.amount, 0),
+                            activeConnections: defaultOrders.filter(o => o.status === 'active').length
+                        },
+                        nextUserId: 4,
+                        nextOrderId: 4
+                    };
+
+                    this.saveDB(initialDB);
+                }
+            }
+            
+            getDB() {
+                return JSON.parse(localStorage.getItem(this.KEY)) || {};
+            }
+            
+            saveDB(data) {
+                localStorage.setItem(this.KEY, JSON.stringify(data));
+            }
+            
+            getCurrentUser() {
+                const userId = localStorage.getItem('currentUserId');
+                if (!userId) return null;
+                
+                const db = this.getDB();
+                return db.users.find(u => u.id == userId) || null;
+            }
+            
+            setCurrentUser(user) {
+                if (user && user.id) {
+                    localStorage.setItem('currentUserId', user.id);
+                } else {
+                    localStorage.removeItem('currentUserId');
+                }
+            }
+            
+            login(email, password) {
+                const db = this.getDB();
+                const user = db.users.find(u => u.email === email && u.password === password);
+                return user;
+            }
+            
+            register(userData) {
+                const db = this.getDB();
+                const existingUser = db.users.find(u => u.email === userData.email);
+                if (existingUser) {
+                    return { success: false, message: "Email already registered" };
+                }
+                
+                const newUser = {
+                    id: db.nextUserId++,
+                    ...userData,
+                    isAdmin: false,
+                    balance: 0,
+                    createdAt: new Date().toISOString()
+                };
+                
+                db.users.push(newUser);
+                db.stats.totalUsers++;
+                this.saveDB(db);
+                
+                return { success: true, user: newUser };
+            }
+            
+            createOrder(userId, orderData) {
+                const db = this.getDB();
+                
+                const planDetails = {
+                    'day': { name: 'Day Pass', hours: 12 },
+                    'night': { name: 'Overnight Pass', hours: 12 },
+                    '24hr': { name: '24-Hour Pass', hours: 24 }
+                };
+                
+                const plan = planDetails[orderData.plan];
+                const expiresAt = new Date(Date.now() + plan.hours * 60 * 60 * 1000);
+                
+                const order = {
+                    id: db.nextOrderId++,
+                    userId: userId,
+                    plan: orderData.plan,
+                    planName: plan.name,
+                    amount: orderData.amount,
+                    paymentMethod: orderData.paymentMethod,
+                    status: 'pending',
+                    wifiPassword: 'WIFI' + Math.floor(1000 + Math.random() * 9000),
+                    createdAt: new Date().toISOString(),
+                    expiresAt: expiresAt.toISOString()
+                };
+                
+                db.orders.push(order);
+                db.stats.totalOrders++;
+                db.stats.totalRevenue += order.amount;
+                
+                // Auto-activate order for demo
+                setTimeout(() => {
+                    order.status = 'active';
+                    db.stats.activeConnections++;
+                    this.saveDB(db);
+                    updateUIForCurrentUser();
+                }, 1000);
+                
+                this.saveDB(db);
+                
+                return { success: true, order };
+            }
+            
+            getUserOrders(userId) {
+                const db = this.getDB();
+                return db.orders.filter(o => o.userId == userId).sort((a, b) => 
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+            }
+            
+            getAllOrders() {
+                const db = this.getDB();
+                return db.orders.sort((a, b) => 
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+            }
+            
+            getAllUsers() {
+                const db = this.getDB();
+                return db.users.map(user => {
+                    const userOrders = this.getUserOrders(user.id);
+                    return {
+                        ...user,
+                        orderCount: userOrders.length,
+                        totalSpent: userOrders.reduce((sum, order) => sum + order.amount, 0)
+                    };
+                });
+            }
+            
+            getStats() {
+                const db = this.getDB();
+                return db.stats;
+            }
+            
+            updateUser(userId, updates) {
+                const db = this.getDB();
+                const userIndex = db.users.findIndex(u => u.id == userId);
+                if (userIndex !== -1) {
+                    db.users[userIndex] = { ...db.users[userIndex], ...updates };
+                    this.saveDB(db);
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        // Global variables
+        const db = new LocalStorageDB();
+        let currentUser = null;
+        let selectedPlan = null;
+        let selectedPaymentMethod = null;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            setupEventListeners();
+            updatePublicStats();
+        });
+
+        // Check authentication
+        function checkAuth() {
+            const user = db.getCurrentUser();
+            if (user) {
+                currentUser = user;
+                updateUIForUser(user);
+                updateUIForCurrentUser();
+            } else {
+                showLoggedOutState();
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Phone number formatting
+            const phoneInputs = document.querySelectorAll('input[type="tel"]');
+            phoneInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length > 0) {
+                        if (value.length <= 4) {
+                            e.target.value = value;
+                        } else if (value.length <= 7) {
+                            e.target.value = value.substring(0, 4) + ' ' + value.substring(4);
+                        } else {
+                            e.target.value = value.substring(0, 4) + ' ' + value.substring(4, 7) + ' ' + value.substring(7, 10);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Update UI for logged in user
+        function updateUIForUser(user) {
+            // Update header
+            document.querySelector('.auth-buttons').style.display = 'none';
+            document.querySelector('.logged-in').style.display = 'flex';
+            
+            // Update user info
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('dashboardName').textContent = user.name;
+            
+            // Update avatar
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=667eea&color=fff`;
+            document.getElementById('userAvatar').src = avatarUrl;
+            
+            // Show admin link if user is admin
+            if (user.isAdmin) {
+                document.getElementById('adminLink').style.display = 'block';
+            }
+            
+            // Close auth modal if open
+            closeAuthModal();
+        }
+
+        // Update UI for current user data
+        function updateUIForCurrentUser() {
+            if (!currentUser) return;
+            
+            // Get user orders
+            const orders = db.getUserOrders(currentUser.id);
+            
+            // Update dashboard
+            const activeOrder = orders.find(o => o.status === 'active');
+            if (activeOrder) {
+                const expiresAt = new Date(activeOrder.expiresAt);
+                const now = new Date();
+                const diffMs = expiresAt - now;
+                const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+                const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                
+                document.getElementById('connectionTime').textContent = `${diffHrs}h ${diffMins}m`;
+                document.getElementById('connectionStatus').textContent = 'Connected';
+                document.getElementById('connectionStatus').className = 'card-status active';
+                document.getElementById('dataUsed').textContent = '2.5 GB';
+                document.getElementById('activeUntil').textContent = expiresAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            } else {
+                document.getElementById('connectionTime').textContent = '0h 0m';
+                document.getElementById('connectionStatus').textContent = 'Disconnected';
+                document.getElementById('connectionStatus').className = 'card-status inactive';
+                document.getElementById('dataUsed').textContent = '0 GB';
+                document.getElementById('activeUntil').textContent = '--:--';
+            }
+            
+            document.getElementById('userBalance').textContent = `TZS ${currentUser.balance || 0}`;
+            document.getElementById('totalOrders').textContent = orders.length;
+            
+            // Update recent orders
+            updateRecentOrders(orders.slice(0, 5));
+            
+            // Update profile page
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('profileInputName').value = currentUser.name;
+            document.getElementById('profileInputPhone').value = currentUser.phone || '';
+            document.getElementById('profileInputRoom').value = currentUser.room || '';
+        }
+
+        // Update recent orders display
+        function updateRecentOrders(orders) {
+            const container = document.getElementById('recentOrders');
+            
+            if (!orders || orders.length === 0) {
+                container.innerHTML = `
+                    <div class="order-row">
+                        <div>No orders yet</div>
+                        <div>--</div>
+                        <div>--</div>
+                        <div class="order-status status-inactive">Inactive</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = orders.map(order => `
+                <div class="order-row">
+                    <div>${order.planName}</div>
+                    <div>${new Date(order.createdAt).toLocaleDateString()}</div>
+                    <div>TZS ${order.amount}</div>
+                    <span class="order-status status-${order.status}">${order.status}</span>
+                </div>
+            `).join('');
+        }
+
+        // Show logged out state
+        function showLoggedOutState() {
+            document.querySelector('.auth-buttons').style.display = 'flex';
+            document.querySelector('.logged-in').style.display = 'none';
+            document.getElementById('dashboardName').textContent = 'Guest';
+        }
+
+        // Update public stats
+        function updatePublicStats() {
+            const stats = db.getStats();
+            document.getElementById('heroUsers').textContent = `${stats.totalUsers}+`;
+        }
+
+        // Auth functions
+        function showAuthModal(tab = 'login') {
+            document.getElementById('authModal').style.display = 'flex';
+            switchAuthTab(tab);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        function switchAuthTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.auth-tab').forEach(t => {
+                t.classList.toggle('active', t.textContent.toLowerCase() === tab);
+            });
+            
+            // Update forms
+            document.getElementById('loginForm').classList.toggle('active', tab === 'login');
+            document.getElementById('registerForm').classList.toggle('active', tab === 'register');
+            
+            // Clear forms
+            if (tab === 'login') {
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+            }
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            const user = db.login(email, password);
+            if (user) {
+                db.setCurrentUser(user);
+                currentUser = user;
+                updateUIForUser(user);
+                updateUIForCurrentUser();
+                closeAuthModal();
+                
+                // Show success message
+                setTimeout(() => {
+                    alert(`Welcome back, ${user.name}!`);
+                }, 100);
+            } else {
+                alert('Invalid email or password');
+            }
+        }
+
+        function register() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const room = document.getElementById('regRoom').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            
+            // Validation
+            if (!name || !email || !phone || !room || !password || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters');
+                return;
+            }
+            
+            const result = db.register({
+                name,
+                email,
+                phone,
+                room,
+                password,
+                balance: 0
+            });
+            
+            if (result.success) {
+                alert('Registration successful! Please login.');
+                switchAuthTab('login');
+                // Clear register form
+                document.getElementById('regName').value = '';
+                document.getElementById('regEmail').value = '';
+                document.getElementById('regPhone').value = '';
+                document.getElementById('regRoom').value = '';
+                document.getElementById('regPassword').value = '';
+                document.getElementById('regConfirmPassword').value = '';
+            } else {
+                alert(result.message || 'Registration failed');
+            }
+        }
+
+        function logout() {
+            db.setCurrentUser(null);
+            currentUser = null;
+            showLoggedOutState();
+            showSection('dashboard');
+            alert('Logged out successfully');
+        }
+
+        // Section navigation
+        function showSection(section) {
+            if (section === 'admin' && (!currentUser || !currentUser.isAdmin)) {
+                alert('Admin access required');
+                showAuthModal();
+                return;
+            }
+            
+            if ((section === 'dashboard' || section === 'order' || section === 'orders' || section === 'profile') && !currentUser) {
+                showAuthModal();
+                return;
+            }
+            
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(s => {
+                s.classList.remove('active');
+            });
+            
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`${section}Section`).classList.add('active');
+            
+            // Update nav link
+            const navLink = document.querySelector(`[onclick="showSection('${section}')"]`);
+            if (navLink) {
+                navLink.classList.add('active');
+            }
+            
+            // Load section data
+            switch(section) {
+                case 'dashboard':
+                    updateUIForCurrentUser();
+                    break;
+                case 'orders':
+                    loadUserOrders();
+                    break;
+                case 'admin':
+                    loadAdminData();
+                    break;
+            }
+        }
+
+        // Plan selection
+        function selectPlan(plan) {
+            selectedPlan = plan;
+            
+            // Update plan selection UI
+            document.querySelectorAll('.pricing-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.plan === plan) {
+                    card.classList.add('selected');
+                }
+            });
+            
+            // Show order form
+            showOrderForm(plan);
+        }
+
+        // Show order form
+        function showOrderForm(plan) {
+            const planDetails = {
+                'day': { name: 'Day Pass', price: 1000, duration: '12 hours (7:00 AM - 7:00 PM)' },
+                'night': { name: 'Overnight Pass', price: 6000, duration: 'Overnight (Router with you)' },
+                '24hr': { name: '24-Hour Pass', price: 10000, duration: '24 hours from activation' }
+            };
+            
+            const details = planDetails[plan];
+            
+            const formHTML = `
+                <h3 style="text-align: center; margin-bottom: 25px;">Order ${details.name}</h3>
+                
+                <div style="background: var(--light); padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0;">
+                        <span>Plan:</span>
+                        <strong>${details.name}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid rgba(0,0,0,0.1);">
+                        <span>Amount:</span>
+                        <strong>TZS ${details.price}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid rgba(0,0,0,0.1);">
+                        <span>Duration:</span>
+                        <strong>${details.duration}</strong>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Select Payment Method</label>
+                    <div class="payment-methods">
+                        <div class="payment-method mpesa" onclick="selectPaymentMethod('mpesa')">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>M-PESA</span>
+                        </div>
+                        <div class="payment-method airtel" onclick="selectPaymentMethod('airtel')">
+                            <i class="fas fa-signal"></i>
+                            <span>Airtel Money</span>
+                        </div>
+                        <div class="payment-method cash" onclick="selectPaymentMethod('cash')">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>Cash on Delivery</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="paymentDetails" style="display: none;">
+                    <!-- Payment instructions will appear here -->
+                </div>
+                
+                <button class="btn btn-primary" onclick="placeOrder()" style="width: 100%; margin-top: 20px;">
+                    <i class="fas fa-paper-plane"></i> Place Order
+                </button>
+            `;
+            
+            document.getElementById('orderFormContainer').innerHTML = formHTML;
+            selectedPaymentMethod = null;
+        }
+
+        // Select payment method
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(m => {
+                m.classList.remove('selected');
+            });
+            document.querySelector(`.payment-method.${method}`).classList.add('selected');
+            
+            // Show payment instructions
+            const instructions = {
+                'mpesa': `
+                    <div class="payment-instructions">
+                        <h4 style="margin-bottom: 10px;">M-PESA Payment Instructions:</h4>
+                        <ol style="margin-left: 20px;">
+                            <li>Go to M-PESA on your phone</li>
+                            <li>Select "Lipa kwa Simu"</li>
+                            <li>Enter number: <strong>0757 123 456</strong></li>
+                            <li>Enter amount: <strong>TZS [AMOUNT]</strong></li>
+                            <li>Enter your PIN and send</li>
+                            <li>Take screenshot of confirmation</li>
+                        </ol>
+                        <p style="margin-top: 10px; font-style: italic;">We'll verify payment and deliver router to your room</p>
+                    </div>
+                `,
+                'airtel': `
+                    <div class="payment-instructions">
+                        <h4 style="margin-bottom: 10px;">Airtel Money Instructions:</h4>
+                        <ol style="margin-left: 20px;">
+                            <li>Go to Airtel Money on your phone</li>
+                            <li>Select "Send Money"</li>
+                            <li>Enter number: <strong>0688 123 456</strong></li>
+                            <li>Enter amount: <strong>TZS [AMOUNT]</strong></li>
+                            <li>Enter your PIN and send</li>
+                            <li>Take screenshot of confirmation</li>
+                        </ol>
+                        <p style="margin-top: 10px; font-style: italic;">We'll verify payment and deliver router to your room</p>
+                    </div>
+                `,
+                'cash': `
+                    <div class="payment-instructions">
+                        <h4 style="margin-bottom: 10px;">Cash Payment:</h4>
+                        <p>You'll pay when we deliver the router to your room.</p>
+                        <p><strong>Instructions:</strong></p>
+                        <ol style="margin-left: 20px;">
+                            <li>Place your order</li>
+                            <li>Our team will call you within 15 minutes</li>
+                            <li>We'll bring router to your room</li>
+                            <li>Pay cash when router is working</li>
+                        </ol>
+                        <p style="margin-top: 10px; font-style: italic;">For overnight orders, we collect router in the morning</p>
+                    </div>
+                `
+            };
+            
+            document.getElementById('paymentDetails').innerHTML = instructions[method];
+            document.getElementById('paymentDetails').style.display = 'block';
+        }
+
+        // Place order
+        function placeOrder() {
+            if (!currentUser) {
+                showAuthModal();
+                return;
+            }
+            
+            if (!selectedPlan) {
+                alert('Please select a plan');
+                return;
+            }
+            
+            if (!selectedPaymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+            
+            const planDetails = {
+                'day': { name: 'Day Pass', price: 1000 },
+                'night': { name: 'Overnight Pass', price: 6000 },
+                '24hr': { name: '24-Hour Pass', price: 10000 }
+            };
+            
+            const orderData = {
+                plan: selectedPlan,
+                amount: planDetails[selectedPlan].price,
+                paymentMethod: selectedPaymentMethod
+            };
+            
+            const result = db.createOrder(currentUser.id, orderData);
+            
+            if (result.success) {
+                showPaymentSuccess(result.order, planDetails[selectedPlan], selectedPaymentMethod);
+            } else {
+                alert('Order failed. Please try again.');
+            }
+        }
+
+        // Show payment success modal
+        function showPaymentSuccess(order, plan, paymentMethod) {
+            document.getElementById('orderId').textContent = `#${order.id}`;
+            document.getElementById('summaryPlan').textContent = plan.name;
+            document.getElementById('summaryAmount').textContent = `TZS ${plan.price}`;
+            document.getElementById('summaryPayment').textContent = 
+                paymentMethod === 'mpesa' ? 'M-PESA' : 
+                paymentMethod === 'airtel' ? 'Airtel Money' : 'Cash';
+            
+            // Update payment instructions
+            const instructions = document.getElementById('paymentInstructions');
+            if (paymentMethod === 'cash') {
+                instructions.innerHTML = `
+                    <h4 style="margin-bottom: 10px;">Order Confirmed!</h4>
+                    <p>Our team will contact you within 15 minutes to deliver the router to your room.</p>
+                    <p><strong>Please have exact change ready (TZS ${plan.price})</strong></p>
+                `;
+            } else {
+                instructions.innerHTML = `
+                    <h4 style="margin-bottom: 10px;">Payment Instructions:</h4>
+                    <p>Please complete your payment:</p>
+                    <ol style="margin-left: 20px;">
+                        <li>Send <strong>TZS ${plan.price}</strong> to ${paymentMethod === 'mpesa' ? '0757 123 456' : '0688 123 456'}</li>
+                        <li>Reference: <strong>ORDER${order.id}</strong></li>
+                        <li>Take screenshot of confirmation</li>
+                        <li>Our team will verify and contact you</li>
+                    </ol>
+                `;
+            }
+            
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        // Close payment modal
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            // Update UI
+            updateUIForCurrentUser();
+            showSection('dashboard');
+        }
+
+        // Load user orders
+        function loadUserOrders() {
+            if (!currentUser) return;
+            
+            const orders = db.getUserOrders(currentUser.id);
+            const container = document.getElementById('ordersTable');
+            
+            if (!orders || orders.length === 0) {
+                container.innerHTML = `
+                    <div class="order-row">
+                        <div>No orders yet</div>
+                        <div>--</div>
+                        <div>--</div>
+                        <div class="order-status status-inactive">Inactive</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = orders.map(order => `
+                <div class="order-row">
+                    <div>${order.planName}</div>
+                    <div>${new Date(order.createdAt).toLocaleDateString()}</div>
+                    <div>TZS ${order.amount}</div>
+                    <span class="order-status status-${order.status}">${order.status}</span>
+                </div>
+            `).join('');
+        }
+
+        // Save profile
+        function saveProfile() {
+            if (!currentUser) {
+                showAuthModal();
+                return;
+            }
+            
+            const name = document.getElementById('profileInputName').value;
+            const phone = document.getElementById('profileInputPhone').value;
+            const room = document.getElementById('profileInputRoom').value;
+            
+            if (!name || !phone || !room) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            const success = db.updateUser(currentUser.id, { name, phone, room });
+            if (success) {
+                currentUser.name = name;
+                currentUser.phone = phone;
+                currentUser.room = room;
+                updateUIForUser(currentUser);
+                alert('Profile updated successfully!');
+            } else {
+                alert('Failed to update profile');
+            }
+        }
+
+        // Load admin data
+        function loadAdminData() {
+            if (!currentUser || !currentUser.isAdmin) return;
+            
+            const stats = db.getStats();
+            const orders = db.getAllOrders();
+            const users = db.getAllUsers();
+            
+            // Update stats
+            document.getElementById('adminTotalUsers').textContent = stats.totalUsers;
+            document.getElementById('adminTotalOrders').textContent = stats.totalOrders;
+            document.getElementById('adminTotalRevenue').textContent = `TZS ${stats.totalRevenue}`;
+            document.getElementById('adminActiveNow').textContent = stats.activeConnections;
+            
+            // Update orders list
+            const ordersList = document.getElementById('adminOrdersList');
+            const recentOrders = orders.slice(0, 5);
+            
+            if (recentOrders.length === 0) {
+                ordersList.innerHTML = '<p style="color: var(--gray);">No orders yet</p>';
+            } else {
+                ordersList.innerHTML = recentOrders.map(order => {
+                    const user = users.find(u => u.id === order.userId);
+                    return `
+                        <div style="padding: 12px; border-bottom: 1px solid var(--light);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <strong>${order.planName}</strong>
+                                <span class="order-status status-${order.status}">${order.status}</span>
+                            </div>
+                            <div style="font-size: 14px; color: var(--gray);">
+                                ${user ? user.name : 'Unknown'} • TZS ${order.amount} • ${new Date(order.createdAt).toLocaleDateString()}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Support functions
+        function openWhatsApp() {
+            window.open('https://wa.me/255712345678?text=Hello%20StudentNet%20Support%21%20I%20need%20help%20with%20my%20WiFi.', '_blank');
+        }
+
+        function callSupport() {
+            window.location.href = 'tel:+255712345678';
+        }
+
+        function showTerms() {
+            alert('Terms and Conditions:\n\n1. WiFi service is for students only\n2. Payments must be completed before service activation\n3. Overnight routers must be returned by 7:00 AM\n4. No refunds for unused time\n5. Service may be suspended for misuse');
+        }
+
+        // Admin functions
+        function addNewUser() {
+            const name = prompt("Enter student name:");
+            if (!name) return;
+            
+            const email = prompt("Enter student email:");
+            if (!email) return;
+            
+            const room = prompt("Enter room/hostel:");
+            if (!room) return;
+            
+            alert(`User ${name} added to the system.\n\nEmail: ${email}\nRoom: ${room}\n\nDefault password: student123`);
+        }
+
+        function exportData() {
+            const dbData = db.getDB();
+            const dataStr = JSON.stringify(dbData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = 'studentnet-data.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert('Data exported successfully!');
+        }
+
+        function viewAllOrders() {
+            alert('Viewing all orders...\n\nIn a real system, this would show all orders in a detailed view.');
+        }
+
+        function managePayments() {
+            alert('Payment Management:\n\n1. M-PESA: 0757 123 456\n2. Airtel Money: 0688 123 456\n3. Cash payments recorded manually');
+        }
+
+        // Initialize sidebar navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
